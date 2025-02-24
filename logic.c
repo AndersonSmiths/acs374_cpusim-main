@@ -139,6 +139,40 @@ info decode(uint32_t instruction)
         decoded.second = upper;  
         decoded.third = rd;      
     }
+
+    // TYPE S
+    // TYPE S
+    // TYPE S
+    // TYPE S
+    else if (opcode == 0x23) {
+        uint32_t lowerImmediate = (instruction >> 7) & 0x1F;
+        uint32_t upperImmediate = (instruction >> 25) & 0x7F;
+        int32_t storeOffset = (int32_t)((upperImmediate << 5) + lowerImmediate);
+        if (storeOffset & 0x800) {
+            storeOffset |= 0xFFFFF000;
+        }
+        switch (funct3) {
+            // SB
+            case 0x0: 
+                decoded.inst = SB;
+                break;
+            // SW
+            case 0x2:
+                decoded.inst = SW;
+                break;
+            // SD
+            case 0x3: 
+                decoded.inst = SD;
+                break;
+            // edge case purposes
+            default:
+                decoded.inst = 0;
+                break;
+        }
+        decoded.first = registers[rs1];   
+        decoded.second = storeOffset;      
+        decoded.third = registers[rs2];     
+    }
     // TYPE B
     // TYPE B
     // TYPE B
@@ -164,13 +198,6 @@ info decode(uint32_t instruction)
         decoded.second = registers[registerTwo]; 
         decoded.third  = (uint64_t)branchOffset;
     }
-
-    
-
-
-
-
-
     return decoded;
     
 }
@@ -194,6 +221,63 @@ info execute(info information)
         // XORI
         case XORI:
             information.first = information.first ^ information.second;
+            break;
+        // LB, LW, LD => compute address
+        case LB:
+        case LW:
+        case LD:
+            information.first = information.first + (int64_t)information.second;
+            break;
+        // ADD
+        case ADD:
+            information.first = information.first + information.second;
+            break;
+        // SUB
+        case SUB:
+            information.first = information.first - information.second;
+            break;
+        // AND
+        case AND:
+            information.first = information.first & information.second;
+            break;
+        // SLT
+        case SLT:
+            if ((int64_t)information.first < (int64_t)information.second)
+                information.first = 1;
+            else
+                information.first = 0;
+            break;
+        // SLL
+        case SLL:
+            information.first = information.first << (information.second & 0x3F);
+            break;
+        // SRA
+        case SRA:
+        {
+            int64_t val = (int64_t)information.first;
+            int sh = (int)(information.second & 0x3F);
+            information.first = (uint64_t)(val >> sh);
+            break;
+        }
+        // LUI
+        case LUI:
+            information.first = information.second;
+            break;
+        // if SB SW or SD, reference doc says we need to compute address
+        case SB:
+        case SW:
+        case SD:
+        {
+            uint64_t address = (uint64_t)(information.first + (int64_t)information.second);
+            information.first = address;
+            break;
+        }
+        // BEQ
+        case BEQ:
+            if (information.first == information.second)
+                information.first = (uint64_t)information.third;
+            else
+                information.first = 0;
             break;
         default:
             break;
