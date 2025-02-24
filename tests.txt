@@ -1,0 +1,32 @@
+CMDS:
+# General Cases for ADDI
+addi ra,zero,0x155
+addi t0,zero,0x123
+OUTS: 1@0x155 5@0x123
+
+
+CMDS:
+# Edge Cases for ADDI
+addi t1,zero,-2048
+addi t2,zero,2047
+addi t3,t1,1
+OUTS: 6@0xfffffffffffff800 7@0x7ff 28@0xfffffffffffff801
+
+
+CMDS:
+# General Cases for ANDI
+andi sp,ra,0x1b9
+OUTS: 2@0x11
+
+
+CMDS:
+# Edge Cases for ANDI
+addi t1,zero,0xfff
+andi t1,t1,-2048
+addi t2,zero,0xfff
+andi t2,t2,2047
+addi t3,zero,0xabcd
+andi t3,t3,-1
+OUTS: 6@0xf800 7@0x7ff 28@0xabcd
+
+
