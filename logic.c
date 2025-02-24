@@ -222,7 +222,7 @@ info execute(info information)
         case XORI:
             information.first = information.first ^ information.second;
             break;
-        // LB, LW, LD => compute address
+        // if SB SW or SD, reference doc says we need to compute address
         case LB:
         case LW:
         case LD:
@@ -285,13 +285,13 @@ info execute(info information)
     return information;
 }
 
-// TODO
+// finished
 info memory(info information)
 {
     return information;
 }
 
-// TODO
+// finished
 uint64_t writeback(uint64_t PC, info information)
 {
     if (information.inst != 0) {
