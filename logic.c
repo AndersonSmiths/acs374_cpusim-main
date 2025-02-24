@@ -31,6 +31,9 @@ info decode(uint32_t instruction)
 
 
     // TYPE I
+    // TYPE I
+    // TYPE I
+    // TYPE I
     if (opcode == 0x13) {
         switch (funct3) {
             // ADDI
@@ -82,9 +85,12 @@ info decode(uint32_t instruction)
         decoded.third = rd;  
 
     // TYPE R    
+    // TYPE R    
+    // TYPE R    
+    // TYPE R    
     } else if (opcode == 0x33) {
         // 
-        uint32_t rd_r  = (instruction >> 7) & 0x1F;
+        uint32_t destReg = (instruction >> 7) & 0x1F;
         switch (funct3) {
             case 0x0:
                 if (funct7 == 0x20) {
@@ -119,8 +125,12 @@ info decode(uint32_t instruction)
         }
         decoded.first  = registers[rs1];
         decoded.second = registers[rs2];
-        decoded.third  = rd_r;
+        decoded.third  = destReg;
     }
+    // TYPE U
+    // TYPE U
+    // TYPE U
+    // TYPE U
     // TYPE U
     else if (opcode == 0x37) {
         decoded.inst = LUI;
@@ -130,16 +140,18 @@ info decode(uint32_t instruction)
         decoded.third = rd;      
     }
     // TYPE B
+    // TYPE B
+    // TYPE B
+    // TYPE B
+    // TYPE B
     else if (opcode == 0x63) {
-        uint32_t rs2_b = (instruction >> 20) & 0x1F;
-        int32_t branch_imm = 0;
-        branch_imm |= ((instruction >> 31) & 0x1) << 12;
-        branch_imm |= ((instruction >> 25) & 0x3F) << 5;
-        branch_imm |= ((instruction >> 8) & 0xF) << 1;
-        branch_imm |= ((instruction >> 7) & 0x1) << 11;
-        if (branch_imm & 0x1000) {
-            branch_imm |= 0xFFFFE000;
+        uint32_t registerTwo = (instruction >> 20) & 0x1F;
+        uint32_t registerOne = rs1;
+        int32_t branchOffset = (((instruction >> 31) & 0x1) << 12) + (((instruction >> 25) & 0x3F) << 5) + (((instruction >> 8) & 0xF) << 1) + (((instruction >> 7) & 0x1) << 11);
+        if (branchOffset & 0x1000) {
+            branchOffset = branchOffset - 0x2000;
         }
+        // only 1 case: BEQ, else 0 for edge case purposes
         switch (funct3) {
             case 0x0: 
                 decoded.inst = BEQ;
@@ -148,9 +160,9 @@ info decode(uint32_t instruction)
                 decoded.inst = 0;
                 break;
         }
-        decoded.first  = registers[rs1];   
-        decoded.second = registers[rs2_b]; 
-        decoded.third  = (uint64_t)branch_imm;
+        decoded.first  = registers[registerOne];   
+        decoded.second = registers[registerTwo]; 
+        decoded.third  = (uint64_t)branchOffset;
     }
 
     
