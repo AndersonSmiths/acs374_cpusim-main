@@ -294,8 +294,21 @@ info memory(info information)
 // TODO
 uint64_t writeback(uint64_t PC, info information)
 {
-    if (information.inst != 0) {
-        registers[information.third] = information.first;
+    switch (information.inst) {
+        case SB:
+        case SW:
+        case SD:
+            // stores so dont need to write
+            break;
+        case BEQ:
+            if (information.first != 0) {
+                return PC + (uint64_t)((int64_t)information.first);
+            }
+            break;
+        default:
+            // writing for all others
+            registers[information.third] = information.first;
+            break;
     }
     return PC + 4;
 }
