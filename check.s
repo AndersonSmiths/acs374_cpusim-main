@@ -28,21 +28,26 @@
 #sra t6,t5,t1
 
 # TYPE R - Edge Cases
-addi t3,zero,-1   # expected 0xffffffffffffffff at register t3 (28)
-add t4,t3,1       # expected 0x0 at register t4 (29)
-sub t5,zero,t3    # e
+#addi t3,zero,-1   
+#add t4,t3,1       
+#sub t5,zero,t3    
 
-# TYPE U
-#lui ra,zero,0x65432
-#
+# TYPE U - General Cases
+# lui ra,0x65432
+
+# TYPE U - Edge Cases
+# lui ra,0x00000    
+# lui ra,0xFFFFF     
+
+
 # TYPE B
-#addi t0,zero,1
-#addi t1,zero,1
-#beq t0,t1,branch
-#addi s0,zero,0
-#branch:
-#addi s0,zero,0x123
-#
+addi t0,zero,5
+addi t1,zero,10
+beq t0,t1,branch
+addi s0,zero,0
+branch:
+addi s0,zero,0x249
+
 # TYPE S
 #addi t0,zero,0xabcd
 #addi t1,zero,4

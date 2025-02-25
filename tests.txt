@@ -1,10 +1,15 @@
+# TYPE I
+# TYPE I
+# TYPE I
+# TYPE I
+
+# General Cases for ADDI (Test Passed)
 CMDS:
-# General Cases for ADDI
 addi ra,zero,0x155
 addi t0,zero,0x123
 OUTS: 1@0x155 5@0x123
 
-
+# General Cases for ANDI (Test Passed)
 CMDS:
 # Edge Cases for ADDI
 addi t1,zero,-2048
@@ -12,15 +17,13 @@ addi t2,zero,2047
 addi t3,t1,1
 OUTS: 6@0xfffffffffffff800 7@0x7ff 28@0xfffffffffffff801
 
-
-CMDS:
-# General Cases for ANDI
+# General Cases for ANDI (Test Passed)
+CMDS: 
 andi sp,ra,0x1b9
 OUTS: 2@0x11
 
-
-CMDS:
-# Edge Cases for ANDI
+# Edge Cases for ANDI (Test Passed)
+CMDS: 
 addi t1,zero,0xfff
 andi t1,t1,-2048
 addi t2,zero,0xfff
@@ -29,4 +32,74 @@ addi t3,zero,0xabcd
 andi t3,t3,-1
 OUTS: 6@0xf800 7@0x7ff 28@0xabcd
 
+# END TYPE I
+# END TYPE I
+# END TYPE I
+# END TYPE I
 
+
+# TYPE R
+# TYPE R
+# TYPE R
+# TYPE R
+
+# General Cases (Test Passed)
+CMDS:
+addi t0,zero,10
+addi t1,zero,4
+add t2,t0,t1
+sub t3,t0,t1
+and t4,t0,t1
+sll t5,t0,t1
+sra t6,t5,t1
+OUTS: 5@0xa 6@0x4 7@0xe 28@0x6 30@0xa0 31@0xa
+
+# Edge Cases (Test Passed)
+CMDS:
+addi t3,zero,-1   
+add t4,t3,1       
+sub t5,zero,t3    
+OUTS: 28@0xffffffffffffffff 29@0x0 30@0x1
+
+
+# END TYPE R
+# END TYPE R
+# END TYPE R
+# END TYPE R
+
+
+# TYPE U
+# TYPE U
+# TYPE U
+# TYPE U
+
+# General Case (Test Passed)
+CMDS:
+lui ra,0x65432
+OUTS: 1@0x65432000
+
+# Edge Cases (Test Passed)
+CMDS:
+lui ra,0x00000
+lui ra,0xFFFFF
+OUTS: 1@0xfffff000
+
+# END TYPE U
+# END TYPE U
+# END TYPE U
+# END TYPE U
+
+# TYPE R
+# TYPE R
+# TYPE R
+# TYPE R
+
+# General Case (Test Passed)
+CMDS:
+addi t0,zero,5
+addi t1,zero,10
+beq t0,t1,branch
+addi s0,zero,0
+branch:
+addi s0,zero,0x249
+OUTS: 5@0x5 6@0xa 8@0x249
