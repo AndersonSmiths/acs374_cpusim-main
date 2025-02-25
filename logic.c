@@ -30,9 +30,7 @@ info decode(uint32_t instruction)
     }
 
 
-    // TYPE I
-    // TYPE I
-    // TYPE I
+
     // TYPE I
     if (opcode == 0x13) {
         switch (funct3) {
@@ -84,9 +82,7 @@ info decode(uint32_t instruction)
         decoded.second = extended;         
         decoded.third = rd;  
 
-    // TYPE R    
-    // TYPE R    
-    // TYPE R    
+   
     // TYPE R    
     } else if (opcode == 0x33) {
         // 
@@ -127,10 +123,7 @@ info decode(uint32_t instruction)
         decoded.second = registers[rs2];
         decoded.third  = destReg;
     }
-    // TYPE U
-    // TYPE U
-    // TYPE U
-    // TYPE U
+
     // TYPE U
     else if (opcode == 0x37) {
         decoded.inst = LUI;
@@ -140,9 +133,6 @@ info decode(uint32_t instruction)
         decoded.third = rd;      
     }
 
-    // TYPE S
-    // TYPE S
-    // TYPE S
     // TYPE S
     else if (opcode == 0x23) {
         uint32_t lowerImmediate = (instruction >> 7) & 0x1F;
@@ -173,10 +163,7 @@ info decode(uint32_t instruction)
         decoded.second = storeOffset;      
         decoded.third = rs2;
     }
-    // TYPE B
-    // TYPE B
-    // TYPE B
-    // TYPE B
+
     // TYPE B
     else if (opcode == 0x63) {
         uint32_t registerTwo = (instruction >> 20) & 0x1F;

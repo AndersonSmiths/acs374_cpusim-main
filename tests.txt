@@ -1,7 +1,21 @@
+
+# Check.s Test
+# ============
+
+CMDS:
+lui ra,0x65432
+addi ra,ra,291
+addi s1,s1,-400
+addi sp,ra,0
+addi gp,zero,1
+sub gp,gp,sp
+lui s2,0xdeadc
+OUTS: 1@0x65432123 2@0x65432123 3@0xffffffff9abcdeDE 9@0xfffffffffffffe70 18@0xdeadc000
+
+
+
 # TYPE I
-# TYPE I
-# TYPE I
-# TYPE I
+# ======
 
 # General Cases for ADDI (Test Passed)
 CMDS:
@@ -9,9 +23,8 @@ addi ra,zero,0x155
 addi t0,zero,0x123
 OUTS: 1@0x155 5@0x123
 
-# General Cases for ANDI (Test Passed)
-CMDS:
 # Edge Cases for ADDI
+CMDS:
 addi t1,zero,-2048
 addi t2,zero,2047
 addi t3,t1,1
@@ -32,16 +45,28 @@ addi t3,zero,0xabcd
 andi t3,t3,-1
 OUTS: 6@0xf800 7@0x7ff 28@0xabcd
 
-# END TYPE I
-# END TYPE I
-# END TYPE I
-# END TYPE I
+# Edge cases for ORI (Test Passed)
+CMDS:
+addi t1,zero,-1
+ori t1,t1,-2048
+addi t2,zero,-1
+ori t2,t2,2047
+addi t3,zero,0x6b3
+ori t3,t3,-1
+OUTS: 6@0xffffffffffffffff 7@0xffffffffffffffff 28@0xffffffffffffffff
 
+# Edge cases for XORI (Test Passed)
+CMDS:
+addi t1,zero,-1
+xori t1,t1,-2048
+addi t2,zero,-1
+xori t2,t2,2047
+addi t3,zero,0x6b3
+xori t3,t3,-1
+OUTS: 6@0x7ff 7@0xfffffffffffff800 28@0xfffffffffffff94c
 
 # TYPE R
-# TYPE R
-# TYPE R
-# TYPE R
+# ======
 
 # General Cases (Test Passed)
 CMDS:
@@ -61,17 +86,8 @@ add t4,t3,1
 sub t5,zero,t3    
 OUTS: 28@0xffffffffffffffff 29@0x0 30@0x1
 
-
-# END TYPE R
-# END TYPE R
-# END TYPE R
-# END TYPE R
-
-
 # TYPE U
-# TYPE U
-# TYPE U
-# TYPE U
+# ======
 
 # General Case (Test Passed)
 CMDS:
@@ -84,15 +100,8 @@ lui ra,0x00000
 lui ra,0xFFFFF
 OUTS: 1@0xfffff000
 
-# END TYPE U
-# END TYPE U
-# END TYPE U
-# END TYPE U
-
 # TYPE B
-# TYPE B
-# TYPE B
-# TYPE B
+# ======
 
 # General Case (Test Passed)
 CMDS:
@@ -104,16 +113,28 @@ branch:
 addi s0,zero,0x249
 OUTS: 5@0x5 6@0xa 8@0x249
 
-# END TYPE B
-# END TYPE B
-# END TYPE B
-# END TYPE B
+# Edge case for when branch isn't availabble
+CMDS:
+addi t0,zero,0x1d
+addi t1,zero,0x1d
+beq t0,t1,branchEdge
+addi s0,zero,0x3b7
+branchEdge:
+addi s0,zero,0x7d2
+OUTS: 5@0x1d 6@0x1d 8@0x7d2
 
+# Edge case for when branch is free
+CMDS:
+addi t0,zero,5
+addi t1,zero,6
+beq t0,t1,branchThree
+addi s0,zero,0x1f3
+branchThree:
+addi s0,zero,0x2ac
+OUTS: 5@0x5 6@0x6 8@0x2ac
 
 # TYPE S
-# TYPE S
-# TYPE S
-# TYPE S
+# ======
 
 # TYPE S - General Cases
 CMDS:
@@ -125,15 +146,8 @@ OUTS: 5@0x5a3 6@0x4 7@0x5a3
 
 # EDGE CASES
 CMDS:
-
 addi t0,zero,0x7ab
 addi t1,zero,-4
 sw t0,0x7ff(t1)
 lw t2,0x7ff(t1)
 OUTS: 5@0x7ab 6@0xfffffffffffffffc 7@0x7ab
-
-# END TYPE S
-# END TYPE S
-# END TYPE S
-# END TYPE S
-# END TYPE S

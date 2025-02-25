@@ -1,4 +1,3 @@
-
 lui ra,0x65432
 addi ra,ra,291
 addi s1,s1,-400
