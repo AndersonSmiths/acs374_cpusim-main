@@ -171,7 +171,7 @@ info decode(uint32_t instruction)
         }
         decoded.first = registers[rs1];   
         decoded.second = storeOffset;      
-        decoded.third = registers[rs2];     
+        decoded.third = rs2;
     }
     // TYPE B
     // TYPE B
@@ -288,6 +288,22 @@ info execute(info information)
 // TODO
 info memory(info information)
 {
+    switch (information.inst) {
+        // load instructions
+        case LB:
+        case LW:
+        case LD:
+            information.first = ht_get(data, information.first);
+            break;
+        // store instructions
+        case SB:
+        case SW:
+        case SD:
+            ht_insert(data, information.first, registers[information.third]);
+            break;
+        default:
+            break;
+    }
     return information;
 }
 

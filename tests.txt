@@ -89,10 +89,10 @@ OUTS: 1@0xfffff000
 # END TYPE U
 # END TYPE U
 
-# TYPE R
-# TYPE R
-# TYPE R
-# TYPE R
+# TYPE B
+# TYPE B
+# TYPE B
+# TYPE B
 
 # General Case (Test Passed)
 CMDS:
@@ -103,3 +103,37 @@ addi s0,zero,0
 branch:
 addi s0,zero,0x249
 OUTS: 5@0x5 6@0xa 8@0x249
+
+# END TYPE B
+# END TYPE B
+# END TYPE B
+# END TYPE B
+
+
+# TYPE S
+# TYPE S
+# TYPE S
+# TYPE S
+
+# TYPE S - General Cases
+CMDS:
+addi t0,zero,0x5a3
+addi t1,zero,4
+sw t0,0(t1)
+lw t2,0(t1)
+OUTS: 5@0x5a3 6@0x4 7@0x5a3
+
+# EDGE CASES
+CMDS:
+
+addi t0,zero,0x7ab
+addi t1,zero,-4
+sw t0,0x7ff(t1)
+lw t2,0x7ff(t1)
+OUTS: 5@0x7ab 6@0xfffffffffffffffc 7@0x7ab
+
+# END TYPE S
+# END TYPE S
+# END TYPE S
+# END TYPE S
+# END TYPE S
